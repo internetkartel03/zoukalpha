@@ -11,7 +11,7 @@ import { classNames } from '~/utils/classNames';
 import { toast } from 'react-toastify';
 
 // Create a custom hook to connect to the boltHistory database
-function useBoltHistoryDB() {
+function useZoukHistoryDB() {
   const [db, setDb] = useState<IDBDatabase | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -75,7 +75,7 @@ interface ChatItem {
 
 export function DataTab() {
   // Use our custom hook for the boltHistory database
-  const { db, isLoading: dbLoading } = useBoltHistoryDB();
+  const { db, isLoading: dbLoading } = useZoukHistoryDB();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const apiKeyFileInputRef = useRef<HTMLInputElement>(null);
   const chatFileInputRef = useRef<HTMLInputElement>(null);

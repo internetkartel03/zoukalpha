@@ -2,7 +2,7 @@
   "name": "bolt",
   "description": "An AI Agent",
   "private": true,
-  "license": "MIT",
+  "license": "Metallic.v1 Proprietary",
   "sideEffects": false,
   "type": "module",
   "version": "1.0.0",

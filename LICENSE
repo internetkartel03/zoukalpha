@@ -1,21 +1,145 @@
-MIT License
+METALLIC.v1 - PROPRIETARY SOFTWARE LICENSE
 
-Copyright (c) 2024 StackBlitz, Inc. and bolt.diy contributors
+Version 1.0
+Effective Date: 2026-06-24
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+================================================================================
+IMPORTANT: READ CAREFULLY BEFORE USING THIS SOFTWARE
+================================================================================
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+This software is proprietary and confidential. Unauthorized access, use, 
+modification, or distribution is strictly prohibited.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+================================================================================
+1. LICENSE GRANT
+================================================================================
+
+Subject to payment of the required license fee ($1,500 USD) and compliance with 
+all terms herein, the Licensor grants the Licensee a LIMITED, NON-EXCLUSIVE, 
+NON-TRANSFERABLE, REVOCABLE license to use this software.
+
+Access to this software is granted ONLY to explicitly authorized users who have:
+  • Paid the full license fee
+  • Received written authorization from Metallic.v1
+  • Agreed to all terms of this license
+
+================================================================================
+2. RESTRICTIONS
+================================================================================
+
+The Licensee SHALL NOT:
+  • Resell, lease, loan, or transfer this software to any third party
+  • Rebrand, rename, or claim ownership of this software
+  • Modify, reverse engineer, decompile, or create derivative works
+  • Distribute, publicly display, or share any part of this software
+  • Use this software for commercial purposes without explicit written consent
+  • Remove or alter any proprietary notices, labels, or marks
+  • Sublicense or permit concurrent use by multiple parties
+  • Create any copies except for backup purposes (one copy maximum)
+
+================================================================================
+3. AUTHORIZED USE ONLY
+================================================================================
+
+This software may ONLY be used by:
+  • The individual or organization who received explicit authorization
+  • Employees/agents acting on behalf of authorized user
+  • Within the scope of authorization granted
+
+Unauthorized use constitutes a material breach of this license.
+
+================================================================================
+4. OWNERSHIP & INTELLECTUAL PROPERTY
+================================================================================
+
+All intellectual property rights, including but not limited to copyrights, 
+patents, trademarks, and trade secrets, are retained exclusively by Metallic.v1.
+
+No ownership rights are transferred to Licensee. This is a license to use only.
+
+================================================================================
+5. TERMINATION
+================================================================================
+
+This license may be terminated immediately if:
+  • Licensee breaches any term of this agreement
+  • Licensee attempts to resell, rebrand, or redistribute the software
+  • Licensee fails to comply with access restrictions
+  • Metallic.v1 determines unauthorized use has occurred
+
+Upon termination:
+  • All rights to use the software cease immediately
+  • Licensee must destroy all copies
+  • Licensee remains liable for any damages
+
+================================================================================
+6. NO WARRANTY
+================================================================================
+
+THIS SOFTWARE IS PROVIDED "AS-IS" WITHOUT ANY WARRANTIES, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+Metallic.v1 makes no representations about the accuracy, completeness, or 
+reliability of the software.
+
+================================================================================
+7. LIMITATION OF LIABILITY
+================================================================================
+
+IN NO EVENT SHALL METALLIC.V1 BE LIABLE FOR ANY DAMAGES (INCLUDING DIRECT, 
+INDIRECT, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES) ARISING FROM USE 
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+================================================================================
+8. CONFIDENTIALITY
+================================================================================
+
+Licensee acknowledges that this software contains proprietary and confidential
+information. Licensee agrees to:
+  • Maintain strict confidentiality
+  • Protect the software from unauthorized access
+  • Not disclose the software to any third party
+  • Not discuss implementation details publicly
+
+================================================================================
+9. AUDIT RIGHTS
+================================================================================
+
+Metallic.v1 reserves the right to audit Licensee's use of the software to 
+ensure compliance with this license.
+
+================================================================================
+10. GOVERNING LAW
+================================================================================
+
+This license shall be governed by applicable law. Any disputes shall be 
+resolved in the jurisdiction where Metallic.v1 is located.
+
+================================================================================
+11. ENTIRE AGREEMENT
+================================================================================
+
+This constitutes the entire agreement between the parties. Any modifications 
+must be made in writing and signed by an authorized representative of 
+Metallic.v1.
+
+================================================================================
+12. CONTACT & AUTHORIZATION
+================================================================================
+
+For authorization inquiries, license transfers, or compliance issues:
+
+Contact: Metallic.v1 License Management
+All use of this software constitutes acceptance of these terms.
+
+Unauthorized access is prohibited and will be prosecuted to the fullest extent.
+
+================================================================================
+
+By using this software, you acknowledge that you have read, understood, and 
+agree to be bound by all terms of this Metallic.v1 Proprietary License.
+
+If you do not agree to these terms, DO NOT USE THIS SOFTWARE.
+
+================================================================================
