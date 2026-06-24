@@ -7,7 +7,7 @@ import { Header } from '~/components/header/Header';
 import BackgroundRays from '~/components/ui/BackgroundRays';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Zouk' }, { name: 'description', content: 'Zouk - AI Workspace Builder' }];
+  return [{ title: 'Zouk-Alpha' }, { name: 'description', content: 'Zouk - AI Workspace Builder' }];
 };
 
 export async function loader(args: LoaderFunctionArgs) {

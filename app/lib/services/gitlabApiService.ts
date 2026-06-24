@@ -296,7 +296,7 @@ export class GitLabApiService {
         visibility: isPrivate ? 'private' : 'public',
         initialize_with_readme: false, // Don't initialize with README to avoid conflicts
         default_branch: 'main', // Explicitly set default branch
-        description: `Project created from Zouk`,
+        description: `Project created from Zouk-Alpha`,
       }),
     });
 
@@ -443,7 +443,7 @@ export class GitLabApiService {
 
       const commitRequest: GitLabCommitRequest = {
         branch: 'main',
-        commit_message: 'Initial commit from Zouk',
+        commit_message: 'Initial commit from Zouk-Alpha',
         actions,
       };
 
@@ -476,7 +476,7 @@ export class GitLabApiService {
 
     const commitRequest: GitLabCommitRequest = {
       branch: 'main',
-      commit_message: 'Update from Zouk',
+      commit_message: 'Update from Zouk-Alpha-Alpha',
       actions,
     };
 
@@ -493,7 +493,7 @@ export class GitLabApiService {
 
         const updateCommitRequest: GitLabCommitRequest = {
           branch: 'main',
-          commit_message: 'Update from Zouk',
+          commit_message: 'Update from Zouk-Alpha-Alpha',
           actions: updateActions,
         };
 

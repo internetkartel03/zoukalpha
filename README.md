@@ -8,7 +8,7 @@ Welcome to Zouk, the official open source version of Zouk, which allows you to c
 Check the [Zouk Docs](https://stackblitz-labs.github.io/Zouk/) for more official installation instructions and additional information.
 
 -----
-Also [this pinned post in our community](https://thinktank.ottomator.ai/t/videos-tutorial-helpful-content/3243) has a bunch of incredible resources for running and deploying Zouk yourself!
+Also [this pinned post in our community](https://thinktank.ottomator.ai/t/videos-tutorial-helpful-content/3243) has a bunch of incredible resources for running and deploying Zouk-Alpha yourself!
 
 We have also launched an experimental agent called the "Zouk Expert" that can answer common questions about Zouk. Find it here on the [oTTomator Live Agent Studio](https://studio.ottomator.ai/).
 
@@ -31,7 +31,7 @@ Zouk was originally started by [Cole Medin](https://www.youtube.com/@ColeMedin) 
 
 ## Join the community
 
-[Join the Zouk community here, in the oTTomator Think Tank!](https://thinktank.ottomator.ai)
+[Join the Zouk-Alpha community here, in the oTTomator Think Tank!](https://thinktank.ottomator.ai)
 
 ## Project management
 
@@ -202,7 +202,7 @@ This option requires Docker and is great when you want an isolated environment o
 
 ### Option 3: Desktop Application (Electron)
 
-For users who prefer a native desktop experience, Zouk is also available as an Electron desktop application:
+For users who prefer a native desktop experience, Zouk-Alpha is also available as an Electron desktop application:
 
 1. **Download the Desktop App**:
    - Visit the [latest release](https://github.com/stackblitz-labs/Zouk/releases/latest)
@@ -228,7 +228,7 @@ The desktop app provides the same full functionality as the web version with add
 
 ## Configuring API Keys and Providers
 
-Zouk features a modern, intuitive settings interface for managing AI providers and API keys. The settings are organized into dedicated panels for easy navigation and configuration.
+Zouk-Alpha features a modern, intuitive settings interface for managing AI providers and API keys. The settings are organized into dedicated panels for easy navigation and configuration.
 
 ### Accessing Provider Settings
 
@@ -403,7 +403,7 @@ This method is recommended for developers who want to:
 >**Open the WebUI to test (Default: http://localhost:5173)**
 >   - Beginners: 
 >     - Try to use a sophisticated Provider/Model like Anthropic with Claude Sonnet 3.x Models to get best results
->     - Explanation: The System Prompt currently implemented in Zouk cant cover the best performance for all providers and models out there. So it works better with some models, then other, even if the models itself are perfect for >programming
+>     - Explanation: The System Prompt currently implemented in Zouk-Alpha cant cover the best performance for all providers and models out there. So it works better with some models, then other, even if the models itself are perfect for >programming
 >     - Future: Planned is a Plugin/Extentions-Library so there can be different System Prompts for different Models, which will help to get better results
 
 #### Staying Updated

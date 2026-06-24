@@ -1,5 +1,5 @@
 appId: com.stackblitz.bolt.diy
-productName: Zouk
+productName: Zouk-Alpha
 directories:
   buildResources: build
   output: dist
