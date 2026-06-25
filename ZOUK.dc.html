@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#000000">
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="200" fill="#000"/>
+    <text x="100" y="110" font-size="48" font-weight="bold" fill="#ec1d2e" text-anchor="middle" font-family="Arial">ZOUK</text>
+    <path d="M 100 60 L 120 100 L 100 140 L 80 100 Z" fill="none" stroke="#ec1d2e" stroke-width="2"/>
+  </svg>
+</template>
+<x-dc>
+<helmet>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Zouk — AI Workstation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Cinzel:wght@700;900&amp;display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; background: #000; color: #e8e8e8; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.5; overflow: hidden; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    textarea, input, button { font-family: inherit; }
+    textarea::placeholder, input::placeholder { color: #6a6a6a; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes breathe { 0%,100% { box-shadow: 0 0 55px rgba(236,29,46,0.35), inset 0 0 65px rgba(236,29,46,0.2); } 50% { box-shadow: 0 0 90px rgba(236,29,46,0.6), inset 0 0 80px rgba(236,29,46,0.32); } }
+    @keyframes shimmer { 0% { background-position: -180% 0; } 100% { background-position: 280% 0; } }
+    .zk-chrome { background: linear-gradient(180deg,#fdfdfd 0%,#d4d4d4 28%,#7e7e7e 50%,#efefef 68%,#9a9a9a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  </style>
+</helmet>
+
+<div style="display: flex; width: 100%; height: 100%; background: #000; position: absolute; left: 0; top: 0;">
+
+  <!-- ============ SIDEBAR ============ -->
+  <div style="width: {{ sidebarWidth }}; background: #0a0a0a; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; z-index: 10; transition: width 0.3s ease; overflow: hidden; position: relative; left: {{ sidebarDragX }}px;" onDragOver="{{ onSidebarDragOver }}" onDrop="{{ onSidebarDrop }}">
+    
+    <!-- Logo & Toggle -->
+    <div style="padding: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1a1a1a; min-height: 64px; position: relative; z-index: 20; cursor: grab; user-select: none;" draggable="true" onDragStart="{{ onSidebarDragStart }}" onDragEnd="{{ onSidebarDragEnd }}">
+      <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+        <img src="assets/zouk-logo.png" style="width: 80px; height: auto; object-fit: contain; pointer-events: none;" alt="Zouk">
+      </sc-if>
+      <button onClick="{{ toggleSidebar }}" style="width: 32px; height: 32px; border-radius: 6px; background: transparent; border: none; color: #b5b5b5; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s;" style-hover="color: #ec1d2e;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="{{ sidebarOpen ? '15 18 9 12 15 6' : '9 18 15 12 9 6' }}"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- New Chat -->
+    <div style="padding: 12px 8px;">
+      <button onClick="{{ newChat }}" style="width: 100%; padding: 12px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s;" style-hover="background: rgba(236,29,46,0.2);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">New Chat</sc-if>
+      </button>
+    </div>
+
+    <!-- Nav Menu -->
+    <div style="flex: 1; overflow-y: auto; padding: 8px;">
+      <button data-section="skills-agents" onClick="{{ navClick }}" style="width: 100%; padding: 12px 8px; background: transparent; border: none; color: #b5b5b5; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; transition: all .15s; margin-bottom: 4px;" style-hover="background: rgba(255,255,255,0.05);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 500;">Skills / Agents</span></sc-if>
+      </button>
+
+      <button data-section="builder-workshop" onClick="{{ navClick }}" style="width: 100%; padding: 12px 8px; background: transparent; border: none; color: #b5b5b5; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; transition: all .15s; margin-bottom: 4px;" style-hover="background: rgba(255,255,255,0.05);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="8" height="8"></rect><rect x="13" y="3" width="8" height="8"></rect><rect x="3" y="13" width="8" height="8"></rect><rect x="13" y="13" width="8" height="8"></rect></svg>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 500;">Builder</span></sc-if>
+      </button>
+
+      <button data-section="library" onClick="{{ navClick }}" style="width: 100%; padding: 12px 8px; background: transparent; border: none; color: #b5b5b5; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; transition: all .15s; margin-bottom: 4px;" style-hover="background: rgba(255,255,255,0.05);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 500;">Library</span></sc-if>
+      </button>
+
+      <!-- Divider -->
+      <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+        <div style="margin: 12px 0; padding: 0 8px;">
+          <p style="font-size: 12px; font-weight: 600; color: #6a6a6a; text-transform: uppercase; letter-spacing: 0.5px;">PROJECTS</p>
+        </div>
+      </sc-if>
+
+      <button data-section="projects" onClick="{{ navClick }}" style="width: 100%; padding: 12px 8px; background: transparent; border: none; color: #b5b5b5; text-align: left; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; transition: all .15s; margin-bottom: 4px;" style-hover="background: rgba(255,255,255,0.05);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6m-6 4h6M5 8h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"></path></svg>
+          <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 500;">New Project</span></sc-if>
+        </div>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </sc-if>
+      </button>
+
+      <!-- Divider -->
+      <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+        <div style="margin: 12px 0; padding: 0 8px;">
+          <p style="font-size: 12px; font-weight: 600; color: #6a6a6a; text-transform: uppercase; letter-spacing: 0.5px;">ALL TASKS</p>
+        </div>
+      </sc-if>
+
+      <button data-section="tasks" onClick="{{ navClick }}" style="width: 100%; padding: 12px 8px; background: transparent; border: none; color: #b5b5b5; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; transition: all .15s; margin-bottom: 4px;" style-hover="background: rgba(255,255,255,0.05);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"></path><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 500;">All Tasks</span></sc-if>
+      </button>
+
+      <button data-section="connectors" onClick="{{ navClick }}" style="width: 100%; padding: 12px 8px; background: transparent; border: none; color: #b5b5b5; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; transition: all .15s; margin-bottom: 4px;" style-hover="background: rgba(255,255,255,0.05);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="12" cy="18" r="3"></circle><line x1="9" y1="8" x2="15" y2="14"></line><line x1="15" y1="8" x2="9" y2="14"></line></svg>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 500;">Connectors</span></sc-if>
+      </button>
+    </div>
+
+    <!-- Settings -->
+    <div style="padding: 8px; border-top: 1px solid #1a1a1a;">
+      <button data-section="settings" onClick="{{ navClick }}" style="width: 100%; padding: 12px 8px; background: transparent; border: none; color: #b5b5b5; text-align: left; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; transition: all .15s; margin-bottom: 4px;" style-hover="background: rgba(255,255,255,0.05);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.12 2.12l4.24 4.24M1 12h6m6 0h6m-16.78 7.78l4.24-4.24m2.12-2.12l4.24-4.24"></path></svg>
+          <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 500;">Settings</span></sc-if>
+        </div>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </sc-if>
+      </button>
+    </div>
+
+    <!-- User Card -->
+    <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+      <div style="padding: 12px; border-top: 1px solid #1a1a1a; display: flex; align-items: center; gap: 12px;">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #ec1d2e, #ff5664); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px; flex-shrink: 0;">
+          {{ userInitial }}
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <p style="font-weight: 600; color: #e8e8e8; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ userName }}</p>
+          <p style="font-size: 12px; color: #6a6a6a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Pro Plan</p>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <!-- Full-area background image -->
+  <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background-image: url('assets/bg-hero.png'); background-size: cover; background-position: center center; pointer-events: none; z-index: 0;"></div>
+  
+  <!-- Overlay scrim -->
+  <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.2) 100%); pointer-events: none; z-index: 1;"></div>
+
+  <!-- ============ ONBOARDING OVERLAY ============ -->
+  <sc-if value="{{ onboarding }}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(6px);">
+      <div style="width: 100%; max-width: 440px; padding: 40px 32px;">
+        
+        <!-- Logo -->
+        <div style="text-align: center; margin-bottom: 32px;">
+          <img src="assets/zouk-logo.png" style="width: 100px; height: auto; object-fit: contain; margin-bottom: 16px;" alt="Zouk">
+          <h1 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px;">Welcome to Zouk</h1>
+          <p style="color: #b5b5b5; font-size: 15px;">AI-powered workstation for building campaigns, apps, and automations</p>
+        </div>
+
+        <!-- Photo Upload -->
+        <sc-if value="{{ !obPhotoUrl }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-bottom: 28px;">
+            <label style="display: block; font-weight: 600; color: #e8e8e8; margin-bottom: 12px; font-size: 14px;">Add a photo</label>
+            <div onClick="{{ obPhotoClick }}" style="width: 100%; height: 140px; border: 2px dashed #2a2a2a; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #0a0a0a; transition: all .15s;" style-hover="border-color: #ec1d2e; background: rgba(236,29,46,0.04);">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="1.5" style="margin-bottom: 8px;"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+              <p style="color: #9a9a9a; font-size: 14px; text-align: center;">Drag and drop or click to upload</p>
+              <p style="color: #6a6a6a; font-size: 12px; margin-top: 4px;">PNG, JPG up to 5MB</p>
+            </div>
+            <input type="file" accept="image/*" onChange="{{ obPhotoUpload }}" style="display: none;" id="photoInput">
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ obPhotoUrl }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-bottom: 28px;">
+            <div style="position: relative; width: 100%; height: 140px; border-radius: 12px; overflow: hidden; border: 2px solid #ec1d2e; background: #0a0a0a; background-image: url('{{ obPhotoUrl }}'); background-size: cover; background-position: center;">
+              <button onClick="{{ obPhotoRemove }}" style="position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.7); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- Name & Email -->
+        <div style="margin-bottom: 28px;">
+          <label style="display: block; font-weight: 600; color: #e8e8e8; margin-bottom: 8px; font-size: 14px;">Full name</label>
+          <input type="text" value="{{ obName }}" onChange="{{ onObName }}" placeholder="Your name" style="width: 100%; padding: 12px 14px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 8px; color: #e8e8e8; font-size: 14px; margin-bottom: 14px;">
+          
+          <label style="display: block; font-weight: 600; color: #e8e8e8; margin-bottom: 8px; font-size: 14px;">Work email</label>
+          <input type="email" value="{{ obEmail }}" onChange="{{ onObEmail }}" placeholder="you@company.com" style="width: 100%; padding: 12px 14px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 8px; color: #e8e8e8; font-size: 14px;">
+        </div>
+
+        <!-- CTA -->
+        <button onClick="{{ obStart }}" disabled="{{ !obCanStart }}" style="width: 100%; padding: 14px; background: {{ obStartBg }}; border: 1px solid {{ obStartBorder }}; border-radius: 10px; color: {{ obStartColor }}; font-weight: 600; font-size: 15px; cursor: {{ obCanStart ? 'pointer' : 'not-allowed' }}; transition: all .15s;">
+          {{ obStartText }}
+        </button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ HOME SCREEN ============ -->
+  <sc-if value="{{ section === 'home' }}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: center; pointer-events: none; z-index: 2; padding: 0 32px 44px;">
+      <div style="position: relative; z-index: 2; height: 414px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 40px 32px 44px; width: 988px; pointer-events: auto;">
+        <h1 style="font-size: 40px; font-weight: 600; color: #f4f4f4; letter-spacing: -0.5px; margin-bottom: 26px; text-align: center; text-shadow: 0 2px 26px rgba(0,0,0,0.6);">What can I <span style="color: #ec1d2e;">build</span> for you?</h1>
+
+        <!-- Composer -->
+        <div style="width: 100%; max-width: 860px; border: 1px solid rgba(236,29,46,0.45); border-radius: 18px; background: linear-gradient(180deg, #0b0809, #060606); box-shadow: 0 0 40px rgba(236,29,46,0.12), inset 0 0 30px rgba(0,0,0,0.5); overflow: hidden;">
+          <div style="padding: 22px 24px 6px; display: flex; gap: 14px;">
+            <textarea value="{{ promptText }}" onChange="{{ onPrompt }}" placeholder="Describe the campaign or project you want to build..." style="flex: 1; min-height: 56px; max-height: 160px; resize: none; background: none; border: none; outline: none; color: #e8e8e8; font-size: 16px; line-height: 1.5;"></textarea>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.6" style="flex-shrink: 0; margin-top: 4px;"><path d="M12 4l1.4 4.6L18 10l-4.6 1.4L12 16l-1.4-4.6L6 10l4.6-1.4z"></path><path d="M18 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"></path></svg>
+          </div>
+          <div style="padding: 8px 18px 16px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <button onClick="{{ openMenu }}" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid #2a2a2a; background: #0e0e0e; color: #cfcfcf; cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 6v12M6 12h12"></path></svg></button>
+              <button onClick="{{ openConnectorMeta }}" style="width: 38px; height: 38px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; font-size: 19px; font-family: Georgia, serif; cursor: pointer;">f</button>
+              <button onClick="{{ openConnectorGoogle }}" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(45deg,#feda75,#d62976,#962fbf,#4f5bd5); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><rect x="4" y="4" width="16" height="16" rx="5"></rect><circle cx="12" cy="12" r="3.6"></circle><circle cx="17.2" cy="6.8" r="1" fill="#fff" stroke="none"></circle></svg></button>
+              <button onClick="{{ openConnectorYoutube }}" style="width: 38px; height: 38px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3l8.5 15h-5L12 11 8.5 18h-5z" fill="#fbbc04"></path><path d="M12 3l4.2 7.5-4.2 7.5L7.8 10.5z" fill="#34a853"></path><circle cx="6" cy="16.5" r="2.4" fill="#4285f4"></circle></svg></button>
+              <button onClick="{{ openConnectorsAll }}" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid #2a2a2a; background: #0e0e0e; color: #cfcfcf; cursor: pointer; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="18" cy="12" r="1.6"></circle></svg></button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <button onClick="{{ openPromptSettings }}" style="background: none; border: none; color: #b5b5b5; cursor: pointer; display: flex;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></button>
+              <button onClick="{{ send }}" style="width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid #ec1d2e; background: rgba(236,29,46,0.12); color: #ec1d2e; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 16px rgba(236,29,46,0.4);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V6M6 11l6-6 6 6"></path></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action chips -->
+        <div style="display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; justify-content: center;">
+          <button onClick="{{ insertChip }}" data-prompt="Create a multi-platform ad campaign for " style="display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: #0b0b0b; border: 1px solid #1c1c1c; border-radius: 14px; color: #e0e0e0; font-size: 15px; font-weight: 500; cursor: pointer; transition: all .15s;" style-hover="border-color: #ec1d2e;">
+            <span>🎯</span>
+            Create Ads
+          </button>
+          <button onClick="{{ insertChip }}" data-prompt="Build a landing page website for " style="display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: #0b0b0b; border: 1px solid #1c1c1c; border-radius: 14px; color: #e0e0e0; font-size: 15px; font-weight: 500; cursor: pointer; transition: all .15s;" style-hover="border-color: #ec1d2e;">
+            <span>🌐</span>
+            Build Website
+          </button>
+          <button onClick="{{ insertChip }}" data-prompt="Automate the workflow that " style="display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: #0b0b0b; border: 1px solid #1c1c1c; border-radius: 14px; color: #e0e0e0; font-size: 15px; font-weight: 500; cursor: pointer; transition: all .15s;" style-hover="border-color: #ec1d2e;">
+            <span>⚙️</span>
+            Automate Workflow
+          </button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SKILLS / AGENTS SCREEN ============ -->
+  <sc-if value="{{ section === 'skills-agents' }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: #060606; overflow-y: auto; z-index: 2; padding: 32px;">
+      <div style="max-width: 1400px;">
+        <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px;">Skills &amp; Agents</h2>
+        <p style="color: #b5b5b5; margin-bottom: 28px;">Create, upload, and manage markdown-based skills and agents</p>
+
+        <!-- Filters & Actions -->
+        <div style="display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap;">
+          <button onClick="{{ setSkillsFilter }}" data-filter="all" style="padding: 10px 16px; background: {{ skillsFilter === 'all' ? 'rgba(236,29,46,0.12)' : '#1a1a1a' }}; border: 1px solid {{ skillsFilter === 'all' ? '#ec1d2e' : '#2a2a2a' }}; border-radius: 8px; color: {{ skillsFilter === 'all' ? '#ec1d2e' : '#b5b5b5' }}; font-weight: 500; cursor: pointer;">All</button>
+          <button onClick="{{ setSkillsFilter }}" data-filter="skills" style="padding: 10px 16px; background: {{ skillsFilter === 'skills' ? 'rgba(236,29,46,0.12)' : '#1a1a1a' }}; border: 1px solid {{ skillsFilter === 'skills' ? '#ec1d2e' : '#2a2a2a' }}; border-radius: 8px; color: {{ skillsFilter === 'skills' ? '#ec1d2e' : '#b5b5b5' }}; font-weight: 500; cursor: pointer;">Skills</button>
+          <button onClick="{{ setSkillsFilter }}" data-filter="agents" style="padding: 10px 16px; background: {{ skillsFilter === 'agents' ? 'rgba(236,29,46,0.12)' : '#1a1a1a' }}; border: 1px solid {{ skillsFilter === 'agents' ? '#ec1d2e' : '#2a2a2a' }}; border-radius: 8px; color: {{ skillsFilter === 'agents' ? '#ec1d2e' : '#b5b5b5' }}; font-weight: 500; cursor: pointer;">Agents</button>
+          <div style="flex: 1;"></div>
+          <button onClick="{{ createSkill }}" style="padding: 10px 16px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 500; cursor: pointer;">+ Create Skill</button>
+          <button onClick="{{ createAgent }}" style="padding: 10px 16px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 500; cursor: pointer;">+ Create Agent</button>
+          <button onClick="{{ openUploadMd }}" style="padding: 10px 16px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 500; cursor: pointer;">Upload .md</button>
+        </div>
+
+        <!-- Skills/Agents Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+          <sc-for list="{{ displayedSkillsAgents }}" as="item" hint-placeholder-count="4">
+            <div style="background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; padding: 16px; animation: fadeIn .3s ease-out;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                <div>
+                  <p style="font-weight: 600; color: #fff; margin-bottom: 4px;">{{ item.name }}</p>
+                  <p style="font-size: 12px; color: #6a6a6a;">{{ item.type === 'skill' ? 'Skill' : 'Agent' }} · {{ item.category }}</p>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <button onClick="{{ editSkillAgent }}" data-id="{{ $index }}" style="width: 28px; height: 28px; border-radius: 6px; background: #1a1a1a; border: none; color: #b5b5b5; cursor: pointer; display: flex; align-items: center; justify-content: center;" style-hover="color: #ec1d2e;">✎</button>
+                  <button onClick="{{ deleteSkillAgent }}" data-id="{{ $index }}" style="width: 28px; height: 28px; border-radius: 6px; background: #1a1a1a; border: none; color: #b5b5b5; cursor: pointer; display: flex; align-items: center; justify-content: center;" style-hover="color: #ec1d2e;">✕</button>
+                </div>
+              </div>
+              <p style="font-size: 13px; color: #9a9a9a; margin-bottom: 12px; line-height: 1.4;">{{ item.description }}</p>
+              <button onClick="{{ useSkillAgent }}" data-id="{{ $index }}" style="width: 100%; padding: 8px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 6px; color: #ec1d2e; font-weight: 500; font-size: 12px; cursor: pointer;">Use in Chat</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ LIBRARY SCREEN ============ -->
+  <sc-if value="{{ section === 'library' }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: #060606; overflow-y: auto; z-index: 2; padding: 32px;">
+      <div style="max-width: 1400px;">
+        <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px;">Library</h2>
+        <p style="color: #b5b5b5; margin-bottom: 28px;">Your files, images, and assets</p>
+
+        <!-- Upload & Search -->
+        <div style="display: flex; gap: 12px; margin-bottom: 28px;">
+          <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+            <input type="text" placeholder="Search files..." value="{{ librarySearch }}" onChange="{{ onLibrarySearch }}" style="flex: 1; padding: 10px 14px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 8px; color: #e8e8e8; font-size: 14px;">
+          </div>
+          <button onClick="{{ openLibraryUpload }}" style="padding: 10px 16px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 500; cursor: pointer;">+ Upload</button>
+        </div>
+
+        <!-- Files Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+          <sc-for list="{{ libraryFiles }}" as="file" hint-placeholder-count="6">
+            <div style="background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all .15s; animation: fadeIn .3s ease-out;" style-hover="border-color: #ec1d2e;">
+              <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #1a0a0c, #0a0a0a); display: flex; align-items: center; justify-content: center; color: #6a6a6a; font-size: 32px;">
+                {{ file.icon }}
+              </div>
+              <div style="padding: 12px;">
+                <p style="font-weight: 600; color: #fff; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ file.name }}</p>
+                <p style="font-size: 12px; color: #6a6a6a;">{{ file.size }}</p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ CONNECTORS SCREEN ============ -->
+  <sc-if value="{{ section === 'connectors' }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: #060606; overflow-y: auto; z-index: 2; padding: 32px;">
+      <div style="max-width: 1400px;">
+        <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px;">Connectors</h2>
+        <p style="color: #b5b5b5; margin-bottom: 28px;">Connect your tools and services</p>
+
+        <!-- Categories -->
+        <div>
+          <h3 style="font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 16px;">Advertising</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px;">
+            <sc-for list="{{ connectors }}" as="conn" hint-placeholder-count="3">
+              <sc-if value="{{ conn.category === 'Advertising' }}" hint-placeholder-val="{{ true }}">
+                <div style="background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; padding: 16px; animation: fadeIn .3s ease-out;">
+                  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 8px; background: {{ conn.iconBg }}; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;">{{ conn.glyph }}</div>
+                    <div>
+                      <p style="font-weight: 600; color: #fff;">{{ conn.name }}</p>
+                      <p style="font-size: 12px; color: #6a6a6a;">{{ conn.category }}</p>
+                    </div>
+                  </div>
+                  <p style="font-size: 13px; color: #9a9a9a; margin-bottom: 12px;">{{ conn.description }}</p>
+                  <button onClick="{{ openConnectorSetup }}" data-id="{{ $index }}" style="width: 100%; padding: 8px; background: {{ conn.connected ? '#1a3a1a' : 'rgba(236,29,46,0.12)' }}; border: 1px solid {{ conn.connected ? '#3ed47f' : '#ec1d2e' }}; border-radius: 6px; color: {{ conn.connected ? '#3ed47f' : '#ec1d2e' }}; font-weight: 500; font-size: 12px; cursor: pointer;">{{ conn.connected ? '✓ Connected' : 'Connect' }}</button>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ PROJECTS SCREEN ============ -->
+  <sc-if value="{{ section === 'projects' }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: #060606; overflow-y: auto; z-index: 2; padding: 32px;">
+      <div style="max-width: 1400px;">
+        <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px;">Projects</h2>
+        <p style="color: #b5b5b5; margin-bottom: 28px;">Your projects and campaigns</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+          <sc-for list="{{ projects }}" as="proj" hint-placeholder-count="3">
+            <div style="background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; padding: 16px; animation: fadeIn .3s ease-out;">
+              <p style="font-weight: 600; color: #fff; margin-bottom: 8px;">{{ proj.name }}</p>
+              <p style="font-size: 13px; color: #9a9a9a; margin-bottom: 12px;">{{ proj.description }}</p>
+              <button onClick="{{ openProject }}" data-id="{{ $index }}" style="width: 100%; padding: 8px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 6px; color: #ec1d2e; font-weight: 500; font-size: 12px; cursor: pointer;">Open</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ TASKS SCREEN ============ -->
+  <sc-if value="{{ section === 'tasks' }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: #060606; overflow-y: auto; z-index: 2; padding: 32px;">
+      <div style="max-width: 1400px;">
+        <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px;">All Tasks</h2>
+        <p style="color: #b5b5b5; margin-bottom: 28px;">Your task history</p>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ tasks }}" as="task" hint-placeholder-count="5">
+            <div style="background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 8px; padding: 14px; display: flex; align-items: center; justify-content: space-between; animation: fadeIn .3s ease-out;">
+              <div style="flex: 1;">
+                <p style="font-weight: 500; color: #fff; margin-bottom: 4px;">{{ task.name }}</p>
+                <p style="font-size: 12px; color: #6a6a6a;">{{ task.project }} · {{ task.time }}</p>
+              </div>
+              <button onClick="{{ continueTask }}" data-id="{{ $index }}" style="padding: 8px 16px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 6px; color: #ec1d2e; font-weight: 500; font-size: 12px; cursor: pointer;">Continue</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SETTINGS SCREEN ============ -->
+  <sc-if value="{{ section === 'settings' }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: #060606; overflow-y: auto; z-index: 2; padding: 32px;">
+      <div style="max-width: 900px;">
+        <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 28px;">Settings</h2>
+
+        <!-- Tab Navigation -->
+        <div style="display: flex; gap: 8px; margin-bottom: 32px; border-bottom: 1px solid #1a1a1a; padding-bottom: 16px;">
+          <button onClick="{{ setSettingsTab }}" data-tab="profile" style="padding: 10px 16px; background: {{ settingsTab === 'profile' ? 'rgba(236,29,46,0.12)' : 'transparent' }}; border: 1px solid {{ settingsTab === 'profile' ? '#ec1d2e' : 'transparent' }}; border-radius: 6px; color: {{ settingsTab === 'profile' ? '#ec1d2e' : '#b5b5b5' }}; font-weight: 500; cursor: pointer; transition: all .15s;">Profile</button>
+          <button onClick="{{ setSettingsTab }}" data-tab="user-flows" style="padding: 10px 16px; background: {{ settingsTab === 'user-flows' ? 'rgba(236,29,46,0.12)' : 'transparent' }}; border: 1px solid {{ settingsTab === 'user-flows' ? '#ec1d2e' : 'transparent' }}; border-radius: 6px; color: {{ settingsTab === 'user-flows' ? '#ec1d2e' : '#b5b5b5' }}; font-weight: 500; cursor: pointer; transition: all .15s;">User Flows</button>
+          <button onClick="{{ setSettingsTab }}" data-tab="ai-models" style="padding: 10px 16px; background: {{ settingsTab === 'ai-models' ? 'rgba(236,29,46,0.12)' : 'transparent' }}; border: 1px solid {{ settingsTab === 'ai-models' ? '#ec1d2e' : 'transparent' }}; border-radius: 6px; color: {{ settingsTab === 'ai-models' ? '#ec1d2e' : '#b5b5b5' }}; font-weight: 500; cursor: pointer; transition: all .15s;">AI Models</button>
+          <button onClick="{{ setSettingsTab }}" data-tab="workspace" style="padding: 10px 16px; background: {{ settingsTab === 'workspace' ? 'rgba(236,29,46,0.12)' : 'transparent' }}; border: 1px solid {{ settingsTab === 'workspace' ? '#ec1d2e' : 'transparent' }}; border-radius: 6px; color: {{ settingsTab === 'workspace' ? '#ec1d2e' : '#b5b5b5' }}; font-weight: 500; cursor: pointer; transition: all .15s;">Workspace</button>
+        </div>
+
+        <!-- PROFILE TAB -->
+        <sc-if value="{{ settingsTab === 'profile' }}" hint-placeholder-val="{{ true }}">
+          <div style="animation: fadeIn .3s ease-out;">
+            <!-- Photo -->
+            <div style="margin-bottom: 28px;">
+              <h3 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px;">Profile Photo</h3>
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #ec1d2e, #ff5664); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 28px; overflow: hidden; background-image: url('{{ userPhoto }}'); background-size: cover; background-position: center;">
+                  <sc-if value="{{ !userPhoto }}" hint-placeholder-val="{{ true }}">{{ userInitial }}</sc-if>
+                </div>
+                <div style="flex: 1;">
+                  <p style="font-size: 13px; color: #b5b5b5; margin-bottom: 8px;">Upload a new profile picture</p>
+                  <button onClick="{{ changePhoto }}" style="padding: 8px 16px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 6px; color: #ec1d2e; font-weight: 500; font-size: 13px; cursor: pointer;">Change Photo</button>
+                  <input type="file" accept="image/*" onChange="{{ onPhotoUpload }}" style="display: none;" id="profilePhotoInput">
+                </div>
+              </div>
+            </div>
+
+            <!-- Full Name -->
+            <div style="margin-bottom: 28px;">
+              <label style="display: block; font-weight: 600; color: #fff; margin-bottom: 8px; font-size: 14px;">Full Name</label>
+              <input type="text" value="{{ profileName }}" onChange="{{ onProfileNameChange }}" style="width: 100%; padding: 10px 12px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 8px; color: #e8e8e8; font-size: 14px;">
+            </div>
+
+            <!-- Email -->
+            <div style="margin-bottom: 28px;">
+              <label style="display: block; font-weight: 600; color: #fff; margin-bottom: 8px; font-size: 14px;">Email Address</label>
+              <input type="email" value="{{ profileEmail }}" onChange="{{ onProfileEmailChange }}" style="width: 100%; padding: 10px 12px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 8px; color: #e8e8e8; font-size: 14px;">
+            </div>
+
+            <!-- Change Password -->
+            <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #1a1a1a;">
+              <h3 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px;">Change Password</h3>
+              <button onClick="{{ openChangePassword }}" style="padding: 10px 16px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 500; font-size: 13px; cursor: pointer;">Update Password</button>
+            </div>
+
+            <!-- Save Button -->
+            <button onClick="{{ saveProfile }}" style="padding: 12px 24px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 600; font-size: 14px; cursor: pointer;">Save Changes</button>
+          </div>
+        </sc-if>
+
+        <!-- USER FLOWS TAB -->
+        <sc-if value="{{ settingsTab === 'user-flows' }}" hint-placeholder-val="{{ false }}">
+          <div style="animation: fadeIn .3s ease-out;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 16px;">User Flow Profiles</h3>
+            <p style="font-size: 13px; color: #9a9a9a; margin-bottom: 20px;">Create and manage user personas and their workflows</p>
+
+            <!-- User Flows List -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+              <sc-for list="{{ userFlows }}" as="flow" hint-placeholder-count="3">
+                <div style="background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 12px; padding: 16px;">
+                  <p style="font-weight: 600; color: #fff; margin-bottom: 4px;">{{ flow.name }}</p>
+                  <p style="font-size: 12px; color: #6a6a6a; margin-bottom: 12px;">{{ flow.description }}</p>
+                  <div style="display: flex; gap: 8px;">
+                    <button onClick="{{ editUserFlow }}" data-id="{{ $index }}" style="flex: 1; padding: 8px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #b5b5b5; font-weight: 500; font-size: 12px; cursor: pointer;">Edit</button>
+                    <button onClick="{{ deleteUserFlow }}" data-id="{{ $index }}" style="flex: 1; padding: 8px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #ff5664; font-weight: 500; font-size: 12px; cursor: pointer;">Delete</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <button onClick="{{ createUserFlow }}" style="padding: 12px 24px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 600; font-size: 14px; cursor: pointer;">+ New User Flow</button>
+          </div>
+        </sc-if>
+
+        <!-- AI MODELS TAB -->
+        <sc-if value="{{ settingsTab === 'ai-models' }}" hint-placeholder-val="{{ false }}">
+          <div style="animation: fadeIn .3s ease-out;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 16px;">AI Model Settings</h3>
+            <p style="font-size: 13px; color: #9a9a9a; margin-bottom: 24px;">Configure custom model responses and behavior</p>
+
+            <!-- Default Model -->
+            <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #1a1a1a;">
+              <label style="display: block; font-weight: 600; color: #fff; margin-bottom: 8px; font-size: 14px;">Default AI Model</label>
+              <select value="{{ defaultAIProvider }}" onChange="{{ onAIProviderChange }}" style="width: 100%; padding: 10px 12px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 8px; color: #e8e8e8; font-size: 14px;">
+                <option>Claude 3.5 Sonnet</option>
+                <option>GPT-4 Turbo</option>
+                <option>Gemini Pro</option>
+                <option>Custom Model</option>
+              </select>
+            </div>
+
+            <!-- Custom Response Settings -->
+            <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #1a1a1a;">
+              <h3 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px;">Response Customization</h3>
+              
+              <label style="display: block; font-weight: 600; color: #fff; margin-bottom: 8px; font-size: 13px;">Temperature (Creativity)</label>
+              <input type="range" min="0" max="1" step="0.1" value="{{ modelTemperature }}" onChange="{{ onTemperatureChange }}" style="width: 100%; margin-bottom: 16px; cursor: pointer;">
+              <p style="font-size: 12px; color: #6a6a6a; margin-bottom: 16px;">{{ modelTemperature }} - {{ modelTemperature &lt; 0.33 ? 'Precise &amp; factual' : modelTemperature &lt; 0.67 ? 'Balanced' : 'Creative &amp; exploratory' }}</p>
+
+              <label style="display: block; font-weight: 600; color: #fff; margin-bottom: 8px; font-size: 13px;">Max Response Length</label>
+              <input type="number" min="256" max="8000" step="256" value="{{ modelMaxTokens }}" onChange="{{ onMaxTokensChange }}" style="width: 100%; padding: 10px 12px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 8px; color: #e8e8e8; font-size: 14px; margin-bottom: 16px;">
+
+              <label style="display: block; font-weight: 600; color: #fff; margin-bottom: 8px; font-size: 13px;">System Prompt</label>
+              <textarea value="{{ modelSystemPrompt }}" onChange="{{ onSystemPromptChange }}" placeholder="Define the model's behavior and response style..." style="width: 100%; min-height: 120px; padding: 10px 12px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 8px; color: #e8e8e8; font-size: 13px; font-family: monospace; resize: vertical;"></textarea>
+            </div>
+
+            <!-- Safety Settings -->
+            <div style="margin-bottom: 28px;">
+              <h3 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px;">Safety &amp; Moderation</h3>
+              <label style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer;">
+                <input type="checkbox" checked="{{ modelSafetyEnabled }}" onChange="{{ toggleModelSafety }}" style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="color: #b5b5b5;">Enable content filtering</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                <input type="checkbox" checked="{{ modelCitationEnabled }}" onChange="{{ toggleModelCitation }}" style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="color: #b5b5b5;">Require citations in responses</span>
+              </label>
+            </div>
+
+            <button onClick="{{ saveAISettings }}" style="padding: 12px 24px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 600; font-size: 14px; cursor: pointer;">Save AI Settings</button>
+          </div>
+        </sc-if>
+
+        <!-- WORKSPACE TAB -->
+        <sc-if value="{{ settingsTab === 'workspace' }}" hint-placeholder-val="{{ false }}">
+          <div style="animation: fadeIn .3s ease-out;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 16px;">Workspace Settings</h3>
+
+            <!-- Features -->
+            <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #1a1a1a;">
+              <h3 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px;">Features</h3>
+              <label style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer;">
+                <input type="checkbox" checked="{{ workspaceBeta }}" onChange="{{ toggleWorkspaceBeta }}" style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="color: #b5b5b5;">Enable Beta Features</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer;">
+                <input type="checkbox" checked="{{ workspaceAnalytics }}" onChange="{{ toggleWorkspaceAnalytics }}" style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="color: #b5b5b5;">Share usage analytics</span>
+              </label>
+            </div>
+
+            <!-- Connectors -->
+            <div style="margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #1a1a1a;">
+              <h3 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px;">Connected Tools</h3>
+              <p style="font-size: 13px; color: #9a9a9a; margin-bottom: 12px;">Manage your integrations</p>
+              <button onClick="{{ navClick }}" data-section="connectors" style="padding: 10px 16px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 8px; color: #ec1d2e; font-weight: 500; cursor: pointer;">Go to Connectors</button>
+            </div>
+
+            <!-- Danger -->
+            <div>
+              <h3 style="font-size: 14px; font-weight: 600; color: #ff5664; margin-bottom: 12px;">Danger Zone</h3>
+              <button onClick="{{ resetPrototypeData }}" style="padding: 10px 16px; background: rgba(255, 86, 100, 0.12); border: 1px solid #ff5664; border-radius: 8px; color: #ff5664; font-weight: 500; cursor: pointer;">Reset All Local Data</button>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ BUILDER WORKSHOP ============ -->
+  <sc-if value="{{ section === 'builder-workshop' }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: #000; z-index: 2; display: flex; flex-direction: column;">
+
+      <!-- Top Bar -->
+      <div style="background: #0a0a0a; border-bottom: 1px solid #1a1a1a; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button onClick="{{ goHome }}" style="background: none; border: none; color: #b5b5b5; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center;" style-hover="color: #ec1d2e;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
+          <div>
+            <p style="font-weight: 600; color: #fff; font-size: 14px;">{{ builderProjectName }}</p>
+            <p style="font-size: 12px; color: #6a6a6a;">Live Preview</p>
+          </div>
+        </div>
+
+        <!-- AI Model Switch -->
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <select value="{{ builderAIModel }}" onChange="{{ onBuilderModelChange }}" style="padding: 8px 12px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #b5b5b5; font-size: 12px;">
+            <option>Claude 3.5 Sonnet</option>
+            <option>GPT-4 Turbo</option>
+            <option>Gemini Pro</option>
+          </select>
+
+          <!-- Publish Menu -->
+          <div data-publish-menu="" style="position: relative;">
+            <button onClick="{{ togglePublishMenu }}" style="padding: 8px 14px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 6px; color: #ec1d2e; font-weight: 600; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 4 20 4 20 20 4 20 4 4 2 4"></polyline><polyline points="16 2 20 6 16 10"></polyline></svg>
+              Publish
+            </button>
+
+            <sc-if value="{{ publishMenuOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; top: 50px; right: 0; background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 8px; overflow: hidden; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.8); min-width: 180px;">
+                <button onClick="{{ publishToPlayStore }}" style="width: 100%; padding: 10px 16px; background: transparent; border: none; color: #b5b5b5; text-align: left; font-size: 13px; cursor: pointer; transition: all .15s; white-space: nowrap;" style-hover="background: rgba(255,255,255,0.05); color: #ec1d2e;">
+                  <span style="font-weight: 500;">📱 Google Play Store</span>
+                </button>
+                <button onClick="{{ publishToAppStore }}" style="width: 100%; padding: 10px 16px; background: transparent; border: none; color: #b5b5b5; text-align: left; font-size: 13px; cursor: pointer; transition: all .15s; white-space: nowrap;" style-hover="background: rgba(255,255,255,0.05); color: #ec1d2e;">
+                  <span style="font-weight: 500;">🍎 Apple App Store</span>
+                </button>
+                <button onClick="{{ shipFlow }}" style="width: 100%; padding: 10px 16px; background: transparent; border: none; color: #b5b5b5; text-align: left; font-size: 13px; cursor: pointer; transition: all .15s; white-space: nowrap;" style-hover="background: rgba(255,255,255,0.05); color: #ec1d2e;">
+                  <span style="font-weight: 500;">🚀 Ship Flow</span>
+                </button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Workshop -->
+      <div style="flex: 1; display: flex; gap: 0; min-height: 0;">
+
+        <!-- Left: Chat Panel -->
+        <div style="width: 320px; background: #0a0a0a; border-right: 1px solid #1a1a1a; display: flex; flex-direction: column; overflow: hidden;">
+          
+          <!-- Chat Messages -->
+          <div style="flex: 1; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ builderChatMessages }}" as="msg" hint-placeholder-count="5">
+              <div style="animation: fadeIn .3s ease-out;">
+                <div style="font-size: 11px; color: #6a6a6a; margin-bottom: 4px;">{{ msg.role === 'user' ? 'You' : 'Assistant' }}</div>
+                <div style="background: {{ msg.role === 'user' ? 'rgba(236,29,46,0.15)' : '#1a1a1a' }}; padding: 10px 12px; border-radius: 8px; font-size: 12px; color: #e8e8e8; line-height: 1.4;">{{ msg.text }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- Input -->
+          <div style="padding: 12px; border-top: 1px solid #1a1a1a;">
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+              <button onClick="{{ openImageUpload }}" style="flex: 1; padding: 8px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #b5b5b5; font-size: 11px; cursor: pointer; transition: all .15s;" style-hover="border-color: #ec1d2e; color: #ec1d2e;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto; margin-bottom: 4px;"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+                Image
+              </button>
+              <button onClick="{{ openFileUpload }}" style="flex: 1; padding: 8px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #b5b5b5; font-size: 11px; cursor: pointer; transition: all .15s;" style-hover="border-color: #ec1d2e; color: #ec1d2e;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto; margin-bottom: 4px;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                File
+              </button>
+              <button onClick="{{ openComponentMarket }}" style="flex: 1; padding: 8px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #b5b5b5; font-size: 11px; cursor: pointer; transition: all .15s;" style-hover="border-color: #ec1d2e; color: #ec1d2e;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto; margin-bottom: 4px;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                Add
+              </button>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <textarea value="{{ builderChatInput }}" onChange="{{ onBuilderChatInput }}" placeholder="Ask the AI to build..." style="flex: 1; min-height: 40px; padding: 8px 10px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #e8e8e8; font-size: 12px; resize: none;"></textarea>
+              <button onClick="{{ sendBuilderChat }}" style="width: 40px; height: 40px; border-radius: 6px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; color: #ec1d2e; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </div>
+            <input type="file" accept="image/*" onChange="{{ onImageUpload }}" style="display: none;" id="builderImageInput">
+            <input type="file" onChange="{{ onFileUpload }}" style="display: none;" id="builderFileInput">
+          </div>
+        </div>
+
+        <!-- Center: Canvas -->
+        <div style="flex: 1; background: #060606; display: flex; flex-direction: column; overflow: hidden;">
+          
+        <div style="flex: 1; background: linear-gradient(135deg, #0a0a0a 0%, #060606 100%); display: flex; align-items: center; justify-content: center; overflow: auto; padding: 20px;">
+            
+          <div style="position: relative; width: 352px; height: 860px; max-width: 280px; background-image: url('assets/phone-mockup-portrait.png'); background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; align-items: center; justify-content: center">
+              <div style="position: absolute; width: 251px; height: 508px; top: 182px; left: 15px; background: linear-gradient(135deg, rgb(0, 0, 0) 0%, rgb(26, 26, 26) 100%); border-radius: 40px; overflow: hidden; display: flex; flex-direction: column">
+                
+              <div style="flex: 1; overflow: auto; padding: 40px 20px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; width: 252px; height: 561px; transform-origin: 0 100%; transform: scale(1.0461,0.7619); position: absolute; left: 5px; top: -158px">
+                  <h1 style="font-size: 18px; font-weight: 700; color: #ec1d2e; margin-bottom: 12px; position: absolute; left: 26px; top: 307px; width: 206px; height: 50px; font-family: Arial">Unlimted Vibe code&nbsp;</h1>
+                  <p style="font-size: 12px; color: #b5b5b5; line-height: 1.5; margin-bottom: 12px; position: absolute; left: 42px; top: 369px; width: 162px; height: 47px"><br><button style="padding: 8px 16px; background: #ec1d2e; border: none; border-radius: 6px; color: #fff; font-weight: 600; font-size: 12px; cursor: pointer; position: absolute; left: 47px; top: 7px">Start</button></p>
+                  
+                </div></div>
+            </div></div></div>
+
+        <!-- Right: Tweaks Panel -->
+        <div style="width: 300px; background: #0a0a0a; border-left: 1px solid #1a1a1a; display: flex; flex-direction: column; overflow: hidden;">
+          <!-- Tab Navigation -->
+          <div style="display: flex; gap: 0; border-bottom: 1px solid #1a1a1a; padding: 0; background: #000;">
+            <button onClick="{{ setBuilderTab }}" data-tab="tweaks" style="flex: 1; padding: 12px; background: {{ builderTab === 'tweaks' ? 'rgba(236,29,46,0.12)' : 'transparent' }}; border: none; color: {{ builderTab === 'tweaks' ? '#ec1d2e' : '#b5b5b5' }}; font-size: 12px; font-weight: 500; cursor: pointer; border-bottom: 2px solid {{ builderTab === 'tweaks' ? '#ec1d2e' : 'transparent' }}; transition: all .15s;">
+              Tweaks
+            </button>
+            <button onClick="{{ setBuilderTab }}" data-tab="assets" style="flex: 1; padding: 12px; background: {{ builderTab === 'assets' ? 'rgba(236,29,46,0.12)' : 'transparent' }}; border: none; color: {{ builderTab === 'assets' ? '#ec1d2e' : '#b5b5b5' }}; font-size: 12px; font-weight: 500; cursor: pointer; border-bottom: 2px solid {{ builderTab === 'assets' ? '#ec1d2e' : 'transparent' }}; transition: all .15s;">
+              Assets
+            </button>
+          </div>
+
+          <!-- Tweaks Tab -->
+          <sc-if value="{{ builderTab === 'tweaks' }}" hint-placeholder-val="{{ true }}">
+            <div style="flex: 1; overflow-y: auto; padding: 16px;">
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 12px; color: #9a9a9a; margin-bottom: 6px;">Title</label>
+                <input type="text" value="{{ builderPreviewTitle }}" onChange="{{ onBuilderTitleChange }}" style="width: 100%; padding: 8px 10px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #e8e8e8; font-size: 12px;">
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 12px; color: #9a9a9a; margin-bottom: 6px;">Description</label>
+                <textarea value="{{ builderPreviewDesc }}" onChange="{{ onBuilderDescChange }}" style="width: 100%; height: 80px; padding: 8px 10px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; color: #e8e8e8; font-size: 12px; resize: vertical;"></textarea>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 12px; color: #9a9a9a; margin-bottom: 6px;">Background Color</label>
+                <div style="display: flex; gap: 8px;">
+                  <button onClick="{{ setBuilderBgColor }}" data-color="#000" style="flex: 1; height: 32px; background: #000; border: 2px solid {{ builderBgColor === '#000' ? '#ec1d2e' : '#2a2a2a' }}; border-radius: 6px; cursor: pointer;"></button>
+                  <button onClick="{{ setBuilderBgColor }}" data-color="#1a1a1a" style="flex: 1; height: 32px; background: #1a1a1a; border: 2px solid {{ builderBgColor === '#1a1a1a' ? '#ec1d2e' : '#2a2a2a' }}; border-radius: 6px; cursor: pointer;"></button>
+                  <button onClick="{{ setBuilderBgColor }}" data-color="#ec1d2e" style="flex: 1; height: 32px; background: #ec1d2e; border: 2px solid {{ builderBgColor === '#ec1d2e' ? '#fff' : '#2a2a2a' }}; border-radius: 6px; cursor: pointer;"></button>
+                </div>
+              </div>
+
+              <div>
+                <label style="display: block; font-size: 12px; color: #9a9a9a; margin-bottom: 6px;">Text Color</label>
+                <input type="color" value="{{ builderTextColor }}" onChange="{{ onBuilderTextColorChange }}" style="width: 100%; height: 40px; border: 1px solid #2a2a2a; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- Assets Tab -->
+          <sc-if value="{{ builderTab === 'assets' }}" hint-placeholder-val="{{ false }}">
+            <div style="flex: 1; overflow-y: auto; padding: 16px;">
+              <sc-if value="{{ builderUploadedAssets.length &gt; 0 }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ builderUploadedAssets }}" as="asset" hint-placeholder-count="2">
+                    <div style="background: #1a1a1a; padding: 8px 10px; border-radius: 6px; border: 1px solid #2a2a2a; font-size: 11px; color: #b5b5b5; display: flex; align-items: center; justify-content: space-between;">
+                      <span>{{ asset.name }}</span>
+                      <button onClick="{{ removeAsset }}" data-id="{{ $index }}" style="background: none; border: none; color: #6a6a6a; cursor: pointer;" style-hover="color: #ff5664;">✕</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ builderUploadedAssets.length === 0 }}" hint-placeholder-val="{{ true }}">
+                <p style="font-size: 12px; color: #6a6a6a; text-align: center; padding: 20px;">No assets uploaded yet</p>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- Component Market Modal -->
+        <sc-if value="{{ componentMarketOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.92); z-index: 200; display: flex; flex-direction: column; backdrop-filter: blur(4px);">
+            <!-- Market Header -->
+            <div style="background: #0a0a0a; border-bottom: 1px solid #1a1a1a; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
+              <h2 style="font-size: 18px; font-weight: 600; color: #fff;">Component Library</h2>
+              <button onClick="{{ closeComponentMarket }}" style="background: none; border: none; color: #b5b5b5; cursor: pointer; font-size: 24px;">✕</button>
+            </div>
+
+            <!-- Market Content -->
+            <div style="flex: 1; display: flex; gap: 0; overflow: hidden;">
+              <!-- Categories Sidebar -->
+              <div style="width: 160px; background: #000; border-right: 1px solid #1a1a1a; overflow-y: auto; padding: 12px;">
+                <sc-for list="{{ componentCategories }}" as="cat" hint-placeholder-count="5">
+                  <button onClick="{{ setComponentCategory }}" data-cat="{{ cat }}" style="width: 100%; padding: 10px 12px; background: {{ componentCategory === cat ? 'rgba(236,29,46,0.12)' : 'transparent' }}; border: 1px solid {{ componentCategory === cat ? '#ec1d2e' : 'transparent' }}; border-radius: 6px; color: {{ componentCategory === cat ? '#ec1d2e' : '#b5b5b5' }}; font-size: 12px; font-weight: 500; cursor: pointer; margin-bottom: 6px; transition: all .15s; text-align: left;">{{ cat }}</button>
+                </sc-for>
+              </div>
+
+              <!-- Components Infinite Scroll -->
+              <div style="flex: 1; overflow-y: auto; padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; align-content: start;">
+                <sc-for list="{{ displayedComponents }}" as="comp" hint-placeholder-count="12">
+                  <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all .15s; animation: fadeIn .3s ease-out;" style-hover="border-color: #ec1d2e; background: rgba(236,29,46,0.08);">
+                    <div style="font-size: 24px; margin-bottom: 8px;">{{ comp.icon }}</div>
+                    <p style="font-size: 11px; color: #e8e8e8; font-weight: 500; margin-bottom: 6px;">{{ comp.name }}</p>
+                    <button onClick="{{ addComponentToChat }}" data-comp="{{ comp.name }}" style="width: 100%; padding: 6px; background: rgba(236,29,46,0.12); border: 1px solid #ec1d2e; border-radius: 4px; color: #ec1d2e; font-size: 10px; font-weight: 600; cursor: pointer;">Add</button>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SEARCH SCREEN ============ -->
+  <sc-if value="{{ section === 'search' }}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; top: 0px; left: {{ sidebarWidth }}; right: 0; bottom: 0; background: #060606; overflow-y: auto; z-index: 2; padding: 32px;">
+      <div style="max-width: 1000px;">
+        <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 28px;">Search</h2>
+        <input type="text" placeholder="Search skills, agents, files, projects..." value="{{ globalSearch }}" onChange="{{ onGlobalSearch }}" style="width: 100%; padding: 12px 16px; background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 10px; color: #e8e8e8; font-size: 16px; margin-bottom: 28px;">
+        
+        <sc-if value="{{ globalSearch.length &gt; 0 }}" hint-placeholder-val="{{ false }}">
+          <p style="color: #b5b5b5; margin-bottom: 12px;">Results for "<strong>{{ globalSearch }}</strong>"</p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ searchResults }}" as="result" hint-placeholder-count="5">
+              <div style="background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 8px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; animation: fadeIn .3s ease-out;">
+                <div>
+                  <p style="font-weight: 500; color: #fff; margin-bottom: 2px;">{{ result.name }}</p>
+                  <p style="font-size: 12px; color: #6a6a6a;">{{ result.type }}</p>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    sidebarOpen: true,
+    onboarding: false,
+    obName: '',
+    obEmail: '',
+    obPhotoUrl: null,
+    userName: 'User',
+    userPhoto: null,
+    userEmail: '',
+    userInitial: 'U',
+    section: 'home',
+    promptText: '',
+    skillsFilter: 'all',
+    librarySearch: '',
+    libraryFiles: [
+      { name: 'Ad Campaign Brief.pdf', size: '2.4 MB', icon: '📄' },
+      { name: 'Brand Guidelines.png', size: '1.2 MB', icon: '🖼️' },
+      { name: 'Analytics Report.xlsx', size: '856 KB', icon: '📊' },
+      { name: 'Social Assets.zip', size: '45.3 MB', icon: '📦' },
+      { name: 'Product Mockup.fig', size: '12.1 MB', icon: '🎨' },
+      { name: 'Website Screenshot.png', size: '3.8 MB', icon: '📸' },
+    ],
+    skillsAgents: [],
+    connectors: [],
+    projects: [],
+    tasks: [],
+    globalSearch: '',
+    settingsTab: 'profile',
+    profileName: 'User',
+    profileEmail: '',
+    userFlows: [
+      { name: 'Marketing Manager', description: 'Plans campaigns and content' },
+      { name: 'Designer', description: 'Creates visual assets' },
+      { name: 'Developer', description: 'Builds and deploys apps' },
+    ],
+    workspaceBeta: true,
+    workspaceAnalytics: true,
+    defaultAIProvider: 'Claude 3.5 Sonnet',
+    modelTemperature: 0.7,
+    modelMaxTokens: 2048,
+    modelSystemPrompt: 'You are a helpful AI assistant specializing in creative projects, marketing, and app development.',
+    modelSafetyEnabled: true,
+    modelCitationEnabled: true,
+    // Builder Workshop
+    builderProjectName: 'Untitled App',
+    builderAIModel: 'Claude 3.5 Sonnet',
+    builderChatMessages: [
+      { role: 'assistant', text: 'Hi! I\'m ready to help you build. Tell me what app you want to create.' }
+    ],
+    builderChatInput: '',
+    builderPreviewTitle: 'Welcome to Your App',
+    builderPreviewDesc: 'Build amazing applications with AI assistance.',
+    builderUploadedAssets: [],
+    publishMenuOpen: false,
+    sidebarDragX: 0,
+    sidebarDragStart: 0,
+    builderTab: 'tweaks',
+    builderBgColor: '#000',
+    builderTextColor: '#e8e8e8',
+    componentMarketOpen: false,
+    componentCategory: 'All',
+    allComponents: [
+      { name: 'Apple Auth', icon: '🍎', cat: 'Auth' }, { name: 'Google Auth', icon: '🔐', cat: 'Auth' }, { name: 'Two Factor', icon: '🔑', cat: 'Auth' },
+      { name: 'Camera', icon: '📷', cat: 'Hardware' }, { name: 'Bluetooth', icon: '📡', cat: 'Hardware' }, { name: 'Microphone', icon: '🎤', cat: 'Hardware' }, { name: 'Location', icon: '📍', cat: 'Hardware' },
+      { name: 'Chat UI', icon: '💬', cat: 'UI' }, { name: 'Modal', icon: '📦', cat: 'UI' }, { name: 'Drawer', icon: '🎨', cat: 'UI' }, { name: 'Calendar', icon: '📅', cat: 'UI' }, { name: 'Carousel', icon: '🎞️', cat: 'UI' },
+      { name: 'Bug Fixer', icon: '🐛', cat: 'Tools' }, { name: 'Analytics', icon: '📊', cat: 'Tools' }, { name: 'Logger', icon: '📝', cat: 'Tools' }, { name: 'Debugger', icon: '🔍', cat: 'Tools' },
+      { name: 'Database', icon: '🗄️', cat: 'Backend' }, { name: 'API Client', icon: '🔌', cat: 'Backend' }, { name: 'WebSocket', icon: '⚡', cat: 'Backend' }, { name: 'Auth0', icon: '🛡️', cat: 'Backend' },
+    ],
+    componentCategories: ['All', 'Auth', 'Hardware', 'UI', 'Tools', 'Backend'],
+  };
+
+  componentDidMount() {
+    const saved = localStorage.getItem('zouk-state');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        this.setState(parsed);
+      } catch (e) {
+        console.log('localStorage parse error');
+      }
+    }
+    document.addEventListener('click', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
+  }
+
+  handleClickOutside = (e) => {
+    if (this.state.publishMenuOpen) {
+      const menu = document.querySelector('[data-publish-menu]');
+      if (menu && !menu.contains(e.target)) {
+        this.setState({ publishMenuOpen: false });
+      }
+    }
+  };
+
+  toggleSidebar = () => { this.setState(s => ({ sidebarOpen: !s.sidebarOpen })); };
+  newTask = () => { this.setState({ section: 'home', promptText: '' }); };
+  navClick = (e) => { this.setState({ section: e.currentTarget.getAttribute('data-section') }); };
+  onPrompt = (e) => { this.setState({ promptText: e.target.value }); };
+  send = () => {
+    const txt = this.state.promptText.trim();
+    if (txt) {
+      const newTask = { name: txt, project: 'Current Task', time: 'now' };
+      this.setState(s => ({ 
+        promptText: '', 
+        tasks: [newTask, ...s.tasks],
+        section: 'home'
+      }), () => this.save());
+    }
+  };
+  insertChip = (e) => {
+    const prompt = e.currentTarget.getAttribute('data-prompt');
+    this.setState({ promptText: prompt });
+  };
+  obPhotoClick = () => { document.getElementById('photoInput')?.click(); };
+  obPhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { this.setState({ obPhotoUrl: String(ev.target?.result || '') }); };
+    reader.readAsDataURL(file);
+  };
+  obPhotoRemove = () => { this.setState({ obPhotoUrl: null }); };
+  onObName = (e) => { this.setState({ obName: e.target.value }); };
+  onObEmail = (e) => { this.setState({ obEmail: e.target.value }); };
+  obStart = () => {
+    if (!this.state.obName.trim() || !this.state.obEmail.includes('@')) return;
+    this.setState({ 
+      onboarding: false, 
+      userName: this.state.obName, 
+      userEmail: this.state.obEmail, 
+      userPhoto: this.state.obPhotoUrl, 
+      userInitial: this.state.obName.charAt(0).toUpperCase(),
+      section: 'home'
+    }, () => this.save());
+  };
+  setSkillsFilter = (e) => { this.setState({ skillsFilter: e.currentTarget.getAttribute('data-filter') }); };
+  createSkill = () => {
+    const newSkill = { type: 'skill', name: 'New Skill', category: 'Custom', description: 'Describe your skill here' };
+    this.setState(s => ({ skillsAgents: [...s.skillsAgents, newSkill] }), () => this.save());
+  };
+  createAgent = () => {
+    const newAgent = { type: 'agent', name: 'New Agent', category: 'Custom', description: 'Describe your agent here' };
+    this.setState(s => ({ skillsAgents: [...s.skillsAgents, newAgent] }), () => this.save());
+  };
+  openUploadMd = () => { document.getElementById('mdUpload')?.click(); };
+  editSkillAgent = (e) => { console.log('Edit item', e.currentTarget.getAttribute('data-id')); };
+  deleteSkillAgent = (e) => {
+    const idx = parseInt(e.currentTarget.getAttribute('data-id'));
+    this.setState(s => ({ skillsAgents: s.skillsAgents.filter((_, i) => i !== idx) }), () => this.save());
+  };
+  useSkillAgent = (e) => {
+    const idx = parseInt(e.currentTarget.getAttribute('data-id'));
+    const item = this.state.skillsAgents[idx];
+    const txt = `Use ${item.type === 'skill' ? 'Skill' : 'Agent'}: ${item.name}`;
+    this.setState({ promptText: txt, section: 'home' });
+  };
+  onLibrarySearch = (e) => { this.setState({ librarySearch: e.target.value }); };
+  openLibraryUpload = () => { document.getElementById('fileUpload')?.click(); };
+  openConnectorSetup = (e) => {
+    const idx = parseInt(e.currentTarget.getAttribute('data-id'));
+    const conn = this.state.connectors[idx];
+    console.log('Setup connector:', conn.name);
+  };
+  openConnectorMeta = () => {
+    const idx = this.state.connectors.findIndex(c => c.name === 'Meta Ads');
+    if (idx >= 0) this.openConnectorSetup({ currentTarget: { getAttribute: () => idx } });
+  };
+  openConnectorGoogle = () => {
+    const idx = this.state.connectors.findIndex(c => c.name === 'Google Ads');
+    if (idx >= 0) this.openConnectorSetup({ currentTarget: { getAttribute: () => idx } });
+  };
+  openConnectorYoutube = () => {
+    const idx = this.state.connectors.findIndex(c => c.name === 'YouTube Ads');
+    if (idx >= 0) this.openConnectorSetup({ currentTarget: { getAttribute: () => idx } });
+  };
+  openConnectorsAll = () => { this.setState({ section: 'connectors' }); };
+  openPromptSettings = () => { console.log('Open prompt settings modal'); };
+  openMenu = () => { console.log('Open menu'); };
+  openProject = (e) => { console.log('Open project', e.currentTarget.getAttribute('data-id')); };
+  continueTask = (e) => {
+    const idx = parseInt(e.currentTarget.getAttribute('data-id'));
+    const task = this.state.tasks[idx];
+    this.setState({ promptText: `Continue: ${task.name}`, section: 'home' });
+  };
+  onGlobalSearch = (e) => { this.setState({ globalSearch: e.target.value }); };
+  toggleWorkspaceBeta = (e) => { this.setState({ workspaceBeta: e.target.checked }); };
+  onAIProviderChange = (e) => { this.setState({ defaultAIProvider: e.target.value }); };
+  setSettingsTab = (e) => { this.setState({ settingsTab: e.currentTarget.getAttribute('data-tab') }); };
+  changePhoto = () => { document.getElementById('profilePhotoInput')?.click(); };
+  onPhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { this.setState({ userPhoto: String(ev.target?.result || '') }); };
+    reader.readAsDataURL(file);
+  };
+  onProfileNameChange = (e) => { this.setState({ profileName: e.target.value }); };
+  onProfileEmailChange = (e) => { this.setState({ profileEmail: e.target.value }); };
+  saveProfile = () => {
+    this.setState({ 
+      userName: this.state.profileName,
+      userEmail: this.state.profileEmail,
+      userInitial: this.state.profileName.charAt(0).toUpperCase()
+    }, () => this.save());
+  };
+  openChangePassword = () => { alert('Password change modal would open here'); };
+  createUserFlow = () => {
+    const newFlow = { name: 'New Flow', description: 'Describe the user flow' };
+    this.setState(s => ({ userFlows: [...s.userFlows, newFlow] }), () => this.save());
+  };
+  editUserFlow = (e) => { console.log('Edit user flow', e.currentTarget.getAttribute('data-id')); };
+  deleteUserFlow = (e) => {
+    const idx = parseInt(e.currentTarget.getAttribute('data-id'));
+    this.setState(s => ({ userFlows: s.userFlows.filter((_, i) => i !== idx) }), () => this.save());
+  };
+  onTemperatureChange = (e) => { this.setState({ modelTemperature: parseFloat(e.target.value) }); };
+  onMaxTokensChange = (e) => { this.setState({ modelMaxTokens: parseInt(e.target.value) || 2048 }); };
+  onSystemPromptChange = (e) => { this.setState({ modelSystemPrompt: e.target.value }); };
+  toggleModelSafety = (e) => { this.setState({ modelSafetyEnabled: e.target.checked }); };
+  toggleModelCitation = (e) => { this.setState({ modelCitationEnabled: e.target.checked }); };
+  saveAISettings = () => {
+    this.save();
+    alert('AI settings saved');
+  };
+  toggleWorkspaceAnalytics = (e) => { this.setState({ workspaceAnalytics: e.target.checked }); };
+  newChat = () => { this.setState({ section: 'home' }); };
+  goHome = () => { this.setState({ section: 'home' }); };
+  onBuilderModelChange = (e) => { this.setState({ builderAIModel: e.target.value }); };
+  togglePublishMenu = () => { this.setState(s => ({ publishMenuOpen: !s.publishMenuOpen })); };
+  publishToPlayStore = () => { 
+    alert('Publishing to Google Play Store...');
+    this.setState({ publishMenuOpen: false });
+  };
+  publishToAppStore = () => { 
+    alert('Publishing to Apple App Store...');
+    this.setState({ publishMenuOpen: false });
+  };
+  shipFlow = () => { 
+    alert('Initiating Ship Flow for deployment...');
+    this.setState({ publishMenuOpen: false });
+  };
+  onBuilderChatInput = (e) => { this.setState({ builderChatInput: e.target.value }); };
+  sendBuilderChat = () => {
+    const txt = this.state.builderChatInput.trim();
+    if (!txt) return;
+    const newMsg = { role: 'user', text: txt };
+    const response = { role: 'assistant', text: `I'll help you with: "${txt}". Building components now...` };
+    this.setState(s => ({ 
+      builderChatMessages: [...s.builderChatMessages, newMsg, response],
+      builderChatInput: ''
+    }));
+  };
+  openImageUpload = () => { document.getElementById('builderImageInput')?.click(); };
+  openFileUpload = () => { document.getElementById('builderFileInput')?.click(); };
+  onImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const asset = { name: file.name, type: 'image' };
+    this.setState(s => ({ builderUploadedAssets: [...s.builderUploadedAssets, asset] }));
+    const msg = { role: 'assistant', text: `Image "${file.name}" uploaded. I can now reference it in the design.` };
+    this.setState(s => ({ builderChatMessages: [...s.builderChatMessages, msg] }));
+  };
+  onFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const asset = { name: file.name, type: 'file' };
+    this.setState(s => ({ builderUploadedAssets: [...s.builderUploadedAssets, asset] }));
+    const msg = { role: 'assistant', text: `File "${file.name}" uploaded. Ready to use in your app.` };
+    this.setState(s => ({ builderChatMessages: [...s.builderChatMessages, msg] }));
+  };
+  connectGithub = () => {
+    const msg = { role: 'assistant', text: 'GitHub connected. I can now access your repositories and import code.' };
+    this.setState(s => ({ builderChatMessages: [...s.builderChatMessages, msg] }));
+  };
+  removeAsset = (e) => {
+    const idx = parseInt(e.currentTarget.getAttribute('data-id'));
+    this.setState(s => ({ builderUploadedAssets: s.builderUploadedAssets.filter((_, i) => i !== idx) }));
+  };
+  onBuilderTitleChange = (e) => { this.setState({ builderPreviewTitle: e.target.value }); };
+  onBuilderDescChange = (e) => { this.setState({ builderPreviewDesc: e.target.value }); };
+  onSidebarDragStart = (e) => {
+    e.dataTransfer.effectAllowed = 'move';
+    this.setState({ sidebarDragStart: e.clientX });
+  };
+  onSidebarDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+  onSidebarDrop = (e) => {
+    e.preventDefault();
+  };
+  onSidebarDragEnd = (e) => {
+    const delta = e.clientX - this.state.sidebarDragStart;
+    const newX = Math.max(-200, Math.min(200, this.state.sidebarDragX + delta));
+    this.setState({ sidebarDragX: newX });
+  };
+  setBuilderTab = (e) => { this.setState({ builderTab: e.currentTarget.getAttribute('data-tab') }); };
+  setBuilderBgColor = (e) => { this.setState({ builderBgColor: e.currentTarget.getAttribute('data-color') }); };
+  onBuilderTextColorChange = (e) => { this.setState({ builderTextColor: e.target.value }); };
+  openComponentMarket = () => { this.setState({ componentMarketOpen: true }); };
+  closeComponentMarket = () => { this.setState({ componentMarketOpen: false }); };
+  setComponentCategory = (e) => { this.setState({ componentCategory: e.currentTarget.getAttribute('data-cat') }); };
+  addComponentToChat = (e) => {
+    const comp = e.currentTarget.getAttribute('data-comp');
+    const msg = { role: 'assistant', text: `Added ${comp} component. You can now configure it in the properties panel.` };
+    this.setState(s => ({ builderChatMessages: [...s.builderChatMessages, msg] }));
+  };
+  useTemplate = (e) => {
+    const template = e.currentTarget.getAttribute('data-template');
+    this.setState({ promptText: `Create a ${template} using best practices`, section: 'home' });
+  };
+  resetPrototypeData = () => { 
+    if (confirm('Reset all local prototype data?')) {
+      localStorage.removeItem('zouk-state');
+      this.setState({ 
+        skillsAgents: [],
+        libraryFiles: [],
+        tasks: [],
+        promptText: '',
+        section: 'home'
+      });
+    }
+  };
+  save = () => {
+    localStorage.setItem('zouk-state', JSON.stringify({
+      userName: this.state.userName,
+      userEmail: this.state.userEmail,
+      userPhoto: this.state.userPhoto,
+      userInitial: this.state.userInitial,
+      profileName: this.state.profileName,
+      profileEmail: this.state.profileEmail,
+      skillsAgents: this.state.skillsAgents,
+      libraryFiles: this.state.libraryFiles,
+      tasks: this.state.tasks,
+      connectors: this.state.connectors,
+      userFlows: this.state.userFlows,
+      workspaceBeta: this.state.workspaceBeta,
+      workspaceAnalytics: this.state.workspaceAnalytics,
+      defaultAIProvider: this.state.defaultAIProvider,
+      modelTemperature: this.state.modelTemperature,
+      modelMaxTokens: this.state.modelMaxTokens,
+      modelSystemPrompt: this.state.modelSystemPrompt,
+      modelSafetyEnabled: this.state.modelSafetyEnabled,
+      modelCitationEnabled: this.state.modelCitationEnabled,
+      builderProjectName: this.state.builderProjectName,
+      builderAIModel: this.state.builderAIModel,
+      builderChatMessages: this.state.builderChatMessages,
+      builderUploadedAssets: this.state.builderUploadedAssets,
+      builderPreviewTitle: this.state.builderPreviewTitle,
+      builderPreviewDesc: this.state.builderPreviewDesc,
+    }));
+  };
+
+  renderVals() {
+    const filtered = this.state.skillsFilter === 'all' 
+      ? this.state.skillsAgents 
+      : this.state.skillsAgents.filter(x => x.type === this.state.skillsFilter);
+    
+    const searchResults = this.state.globalSearch.length > 0 
+      ? [
+          ...this.state.skillsAgents.filter(x => x.name.toLowerCase().includes(this.state.globalSearch.toLowerCase())),
+          ...this.state.libraryFiles.filter(x => x.name.toLowerCase().includes(this.state.globalSearch.toLowerCase())),
+          ...this.state.projects.filter(x => x.name.toLowerCase().includes(this.state.globalSearch.toLowerCase())),
+        ]
+      : [];
+
+    return {
+      sidebarOpen: this.state.sidebarOpen,
+      sidebarWidth: this.state.sidebarOpen ? '300px' : '60px',
+      toggleSidebar: this.toggleSidebar,
+      newChat: this.newChat,
+      navClick: this.navClick,
+      section: this.state.section,
+      promptText: this.state.promptText,
+      onPrompt: this.onPrompt,
+      send: this.send,
+      insertChip: this.insertChip,
+      onboarding: this.state.onboarding,
+      obName: this.state.obName,
+      obEmail: this.state.obEmail,
+      obPhotoUrl: this.state.obPhotoUrl,
+      obPhotoClick: this.obPhotoClick,
+      obPhotoUpload: this.obPhotoUpload,
+      obPhotoRemove: this.obPhotoRemove,
+      onObName: this.onObName,
+      onObEmail: this.onObEmail,
+      obCanStart: this.state.obName.trim().length > 0 && this.state.obEmail.includes('@'),
+      obStartText: (this.state.obName.trim() && this.state.obEmail) ? 'Get Started' : 'Complete profile',
+      obStartBg: (this.state.obName.trim() && this.state.obEmail) ? 'rgba(236,29,46,0.12)' : '#0a0a0a',
+      obStartBorder: (this.state.obName.trim() && this.state.obEmail) ? '#ec1d2e' : '#1c1c1c',
+      obStartColor: (this.state.obName.trim() && this.state.obEmail) ? '#ec1d2e' : '#6a6a6a',
+      obStart: this.obStart,
+      userName: this.state.userName,
+      userPhoto: this.state.userPhoto,
+      userInitial: this.state.userInitial,
+      skillsFilter: this.state.skillsFilter,
+      displayedSkillsAgents: filtered,
+      setSkillsFilter: this.setSkillsFilter,
+      createSkill: this.createSkill,
+      createAgent: this.createAgent,
+      openUploadMd: this.openUploadMd,
+      editSkillAgent: this.editSkillAgent,
+      deleteSkillAgent: this.deleteSkillAgent,
+      useSkillAgent: this.useSkillAgent,
+      librarySearch: this.state.librarySearch,
+      libraryFiles: this.state.libraryFiles,
+      onLibrarySearch: this.onLibrarySearch,
+      openLibraryUpload: this.openLibraryUpload,
+      connectors: this.state.connectors,
+      openConnectorSetup: this.openConnectorSetup,
+      openConnectorMeta: this.openConnectorMeta,
+      openConnectorGoogle: this.openConnectorGoogle,
+      openConnectorYoutube: this.openConnectorYoutube,
+      openConnectorsAll: this.openConnectorsAll,
+      openPromptSettings: this.openPromptSettings,
+      openMenu: this.openMenu,
+      projects: this.state.projects,
+      openProject: this.openProject,
+      tasks: this.state.tasks,
+      continueTask: this.continueTask,
+      globalSearch: this.state.globalSearch,
+      searchResults: searchResults,
+      onGlobalSearch: this.onGlobalSearch,
+      settingsTab: this.state.settingsTab,
+      setSettingsTab: this.setSettingsTab,
+      profileName: this.state.profileName,
+      profileEmail: this.state.profileEmail,
+      changePhoto: this.changePhoto,
+      onPhotoUpload: this.onPhotoUpload,
+      onProfileNameChange: this.onProfileNameChange,
+      onProfileEmailChange: this.onProfileEmailChange,
+      saveProfile: this.saveProfile,
+      openChangePassword: this.openChangePassword,
+      userFlows: this.state.userFlows,
+      createUserFlow: this.createUserFlow,
+      editUserFlow: this.editUserFlow,
+      deleteUserFlow: this.deleteUserFlow,
+      modelTemperature: this.state.modelTemperature,
+      modelMaxTokens: this.state.modelMaxTokens,
+      modelSystemPrompt: this.state.modelSystemPrompt,
+      modelSafetyEnabled: this.state.modelSafetyEnabled,
+      modelCitationEnabled: this.state.modelCitationEnabled,
+      onTemperatureChange: this.onTemperatureChange,
+      onMaxTokensChange: this.onMaxTokensChange,
+      onSystemPromptChange: this.onSystemPromptChange,
+      toggleModelSafety: this.toggleModelSafety,
+      toggleModelCitation: this.toggleModelCitation,
+      saveAISettings: this.saveAISettings,
+      workspaceBeta: this.state.workspaceBeta,
+      workspaceAnalytics: this.state.workspaceAnalytics,
+      toggleWorkspaceBeta: this.toggleWorkspaceBeta,
+      toggleWorkspaceAnalytics: this.toggleWorkspaceAnalytics,
+      defaultAIProvider: this.state.defaultAIProvider,
+      onAIProviderChange: this.onAIProviderChange,
+      goHome: this.goHome,
+      builderProjectName: this.state.builderProjectName,
+      builderAIModel: this.state.builderAIModel,
+      onBuilderModelChange: this.onBuilderModelChange,
+      togglePublishMenu: this.togglePublishMenu,
+      publishMenuOpen: this.state.publishMenuOpen,
+      publishToPlayStore: this.publishToPlayStore,
+      publishToAppStore: this.publishToAppStore,
+      shipFlow: this.shipFlow,
+      builderChatMessages: this.state.builderChatMessages,
+      builderChatInput: this.state.builderChatInput,
+      onBuilderChatInput: this.onBuilderChatInput,
+      sendBuilderChat: this.sendBuilderChat,
+      openImageUpload: this.openImageUpload,
+      openFileUpload: this.openFileUpload,
+      onImageUpload: this.onImageUpload,
+      onFileUpload: this.onFileUpload,
+      connectGithub: this.connectGithub,
+      builderUploadedAssets: this.state.builderUploadedAssets,
+      removeAsset: this.removeAsset,
+      builderPreviewTitle: this.state.builderPreviewTitle,
+      builderPreviewDesc: this.state.builderPreviewDesc,
+      onBuilderTitleChange: this.onBuilderTitleChange,
+      onBuilderDescChange: this.onBuilderDescChange,
+      useTemplate: this.useTemplate,
+      sidebarDragX: this.state.sidebarDragX,
+      onSidebarDragStart: this.onSidebarDragStart,
+      onSidebarDragEnd: this.onSidebarDragEnd,
+      onSidebarDragOver: this.onSidebarDragOver,
+      onSidebarDrop: this.onSidebarDrop,
+      builderTab: this.state.builderTab,
+      setBuilderTab: this.setBuilderTab,
+      builderBgColor: this.state.builderBgColor,
+      setBuilderBgColor: this.setBuilderBgColor,
+      builderTextColor: this.state.builderTextColor,
+      onBuilderTextColorChange: this.onBuilderTextColorChange,
+      componentMarketOpen: this.state.componentMarketOpen,
+      openComponentMarket: this.openComponentMarket,
+      closeComponentMarket: this.closeComponentMarket,
+      componentCategory: this.state.componentCategory,
+      componentCategories: this.state.componentCategories,
+      displayedComponents: this.state.componentCategory === 'All' 
+        ? this.state.allComponents 
+        : this.state.allComponents.filter(c => c.cat === this.state.componentCategory),
+      setComponentCategory: this.setComponentCategory,
+      addComponentToChat: this.addComponentToChat,
+      resetPrototypeData: this.resetPrototypeData,
+    };
+  }
+}
+</script>
+</body>
+</html>
